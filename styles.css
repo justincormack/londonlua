@@ -1,0 +1,31 @@
+html {
+  background: white;
+  color: navy;
+  font-family: Helvetica, sans-serif;
+  font-size: 20px;
+  max-width: 800px;
+}
+
+h1 {
+  background: white url(london-lua128.png) no-repeat 20px 20px;
+  height: 200px;
+  display: block;
+  padding-left: 200px;
+  padding-top: 50px;
+  font-size: 40px;
+}
+
+p, li, ul, form, h2, h3 {
+  padding-left: 50px;
+}
+
+p + p { margin-top: 0.5em; }
+
+a {
+  color: blue;
+}
+
+.talk {
+  padding-left: 50px;
+  font-style: italic;
+}
