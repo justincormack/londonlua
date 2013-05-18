@@ -1,0 +1,434 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<title>Lua in Wikipedia</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=792, user-scalable=no">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<link rel="stylesheet" href="shower/themes/ribbon/styles/screen.css">
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+
+        -- use prettify to make code look nice
+        <link href="prettify.css" type="text/css" rel="stylesheet" />
+        <script type="text/javascript" src="prettify.js"></script>
+
+	<!--
+		To apply styles to the certain slides
+		set slide ID to get needed elements
+		-->
+	<style>
+		#Cover h2 {
+			margin:30px 0 0 350px;
+			color:#FFF;
+			text-align:center;
+			font-size:70px;
+			}
+		section#Cover p {
+			margin:10px 0 0 350px;
+			text-align:center;
+			color:#FFF;
+			font-style:italic;
+			font-size:20px;
+			}
+			#Cover p a {
+				color:#FFF;
+				}
+		#Picture h2 {
+			color:#FFF;
+			}
+		#SeeMore h2 {
+			font-size:100px
+			}
+		#SeeMore img {
+			width:0.72em;
+			height:0.72em;
+			}
+a.image {
+    text-decoration: none;
+    border: 0;
+    color: fff;
+}
+	</style>
+</head>
+<body class="list" onload="prettyPrint()">
+	<header class="caption">
+		<h1>Lua in Wikipedia</h1>
+		<p>Justin Cormack</p>
+	</header>
+
+
+	<section class="slide cover" id="Cover"><div>
+		<h2>Lua in Wikipedia</h2>
+		<p>Justin Cormack <a href="https://twitter.com/justincormack">@justincormack</a></p>
+                <p>London Lua <a href="http://www.londonlua.org/">http://www.londonlua.org/</a></p>
+		<img src="pictures/london-lua512.png" alt="">
+	</div></section>
+
+
+
+	<section class="slide"><div>
+		<h2>What is Lua?</h2>
+		<ol>
+			<li>Created in 1993 (between Ruby and Python)</li>
+			<li>From Rio de Janeiro</li>
+                        <li>Designed to be simple, small, portable, fast, and easily embedded into applications (like Wikipedia)</li>
+		</ol>
+		<a href="https://commons.wikimedia.org/wiki/File:Panorama_from_Rio_de_Janeiro.jpg" class="image"><img src="pictures/800px-Panorama_from_Rio_de_Janeiro.jpg" alt="Rio de Janeiro"></a>
+	</div></section>
+
+	<section class="slide shout"><div>
+		<h2>Intro to Lua</h2>
+	</div></section>
+
+<section class="slide"><div>
+<h2>What does it look like?</h2>
+<pre class="prettyprint">
+-- defines factorial
+function fact (n)
+  if n == 0 then
+    return 1
+  else
+    return n * fact(n - 1)
+  end
+end
+</pre>
+</div></section>
+
+<section class="slide"><div>
+<h2>Types</h2>
+<pre class="prettyprint">
+a = "a string"; type(a) --> "string"
+a = 2         ; type(a) --> "number"
+a = fact      ; type(a) --> "function"
+a = nil       ; type(a) --> "nil"
+a = true      ; type(a) --> "boolean"
+a = {1, 2, 3} ; type(a) --> "table"
+a = {name = 1}; type(a) --> "table"
+</pre>
+</div></section>
+
+<section class="slide"><div>
+<h2>Numbers</h2>
+<p>Only one kind of number whether integer or floating point.
+<pre class="prettyprint">
+a = 2 * 4
+b = tonumber("65")
+c = math.abs(-1)
+d = 3.2 * math.sqrt(42)
+</pre>
+</div></section>
+
+<section class="slide"><div>
+<h2>Strings</h2>
+<p>Strings are treated as binary bytes, not zero terminated. Need a library for UTF8 operations.
+<pre class="prettyprint">
+a = "test " .. "appending"
+b = "append a number " .. tostring("65")
+c = "append a number " .. 65
+utf = "รีโอเดจาเนโร"
+#utf --> 36 -- length in bytes, not characters
+</pre>
+</div></section>
+
+<section class="slide"><div>
+<h2>Variables</h2>
+<p>These must have ASCII names, plus underscore, or numbers after the first character. Default is global, local in a block (eg function, do .. end)
+<pre class="prettyprint">
+test1 = 3 -- global
+do
+  local test1 = "not the global"
+end
+test1 = 4 -- global
+</pre>
+</div></section>
+
+<section class="slide"><div>
+<h2>Functions</h2>
+<p>First class functions, tail recursion supported
+<pre class="prettyprint">
+function double(a)
+  return a * 2
+end
+double = function(a) return a * 2 end
+</pre>
+</div></section>
+
+<section class="slide"><div>
+<h2>Multiple values</h2>
+<pre class="prettyprint">
+function double_both(a, b)
+  return a * 2, b * 2
+end
+print(double_both(1, 2))
+x, y = double_both(6, 7)
+print(x, y)
+x, y = y, x
+print(x, y)
+</pre>
+</div></section>
+
+<section class="slide"><div>
+<h2>if then else</h2>
+<p>Any value that is not false or nil is truthy (<b>including 0</b>)
+<pre class="prettyprint">
+function is2(a)
+  if a == 2 then return true
+  else return false
+  end
+end
+function is2(a) if a == 2 then return true else return false end end
+</pre>
+</div></section>
+
+<section class="slide"><div>
+<h2>booleans</h2>
+<p>You can use boolean and, or, not.
+<pre class="prettyprint">
+function is2or3(a)
+  return a == 2 or a == 3
+end
+b = nil
+c = b or "b was nil"
+c --> "b was nil"
+</pre>
+</div></section>
+
+<section class="slide"><div>
+<h2>for loop (numeric)</h2>
+<pre class="prettyprint">
+local sum = 0
+for i = 1, 10 do
+  sum = sum + i
+end
+-- i no longer defined here, local to loop
+</pre>
+</div></section>
+
+<section class="slide"><div>
+<h2>Tables as arrays</h2>
+<pre class="prettyprint">
+a = {1, 2, 3} -- standard dense 1-based array
+a[1] --> 1
+#a --> 3
+a[#a + 1] = 4 -- extend array
+#a --> 4
+table.concat(a, ", ") --> "1, 2, 3"
+</pre>
+</div></section>
+
+<section class="slide"><div>
+<h2>Tables as sparse arrays</h2>
+<pre class="prettyprint">
+b = {[4] = 3, [10] = 4}
+b[10] --> 4
+b[1] --> nil
+b[4] = 6
+-- #b not usefully defined if sparse
+</pre>
+</div></section>
+
+<section class="slide"><div>
+<h2>Iterate over arrays</h2>
+<pre class="prettyprint">
+a = {10, 11, 12, 13}
+for i = 1, #a do print(i, a[i]) end
+for k, v in ipairs(a) do print(k, v) end
+</pre>
+</div></section>
+
+<section class="slide"><div>
+<h2>Tables as hashes</h2>
+<pre class="prettyprint">
+a = {name = "Lua", age = 19, f = function(x) return x + 2 end}
+a.name --> "Lua"
+a["name"] --> "Lua"
+a.f(1) --> 3
+index = "age"
+a[index] --> 19
+a.extra = 55
+</pre>
+</div></section>
+
+<section class="slide"><div>
+<h2>Iterate over hashes</h2>
+<pre class="prettyprint">
+a = {name = "Lua", age = 19, f = function(x) return x + 2 end}
+for k, v in pairs(a) do
+  print(k, v)
+end
+</pre>
+</div></section>
+
+<section class="slide"><div>
+<h2>Tables as mixtures</h2>
+<pre class="prettyprint">
+a = {1, 2, 3, 4, name = "Lua", age = 19, f = function(x) return x + 2 end}
+for k, v in pairs(a) do
+  print(k, v)
+end
+for i = 1, #a do print(i, a[i]) end
+</pre>
+</div></section>
+
+<section class="slide"><div>
+<h2>Simplified function calls</h2>
+<pre class="prettyprint">
+print "test"
+
+function f(tab)
+  for k, v in pairs(tab) do print(k, v) end
+end
+f{name = "Roberto", location = "Rio"}
+</pre>
+</div></section>
+
+<section class="slide"><div>
+<h2>Tables as objects</h2>
+<pre class="prettyprint">
+p = {}
+function p:setname(name) self.myname = name end
+function p:name(name) return self.myname end
+p:setname("Justin")
+print(p:name())
+print(p.name(p)) -- this is all that : means
+</pre>
+</div></section>
+
+<section class="slide"><div>
+<h2>Tables as modules</h2>
+<pre class="prettyprint">
+p = {}
+function p:setname(name) self.myname = name end
+function p:name(name) return self.myname end
+return p
+</pre>
+Then call with
+<pre class="prettyprint">
+tab = require "module name"
+tab:setname("Justin")
+</pre>
+</div></section>
+
+	<section class="slide shout"><div>
+		<h2>Wiki templates</h2>
+	</div></section>
+
+<section class="slide"><div>
+<h2>Wiki templates</h2>
+<p>In a Wikipedia page you have text and then you have templates to do all the formatting, complex functionality.
+<pre class="prettyprint">
+{{Infobox musical artist
+| name       = Nyusha Shurochkina
+| image        =
+| years_active    = 2007–present
+| background      = solo_singer
+...
+}}
+</pre>
+</div></section>
+
+<section class="slide"><div>
+<h2>Wiki templates</h2>
+<p>This will render out the infobox</p>
+<img src="pictures/infobox.png">
+</div></section>
+
+<section class="slide"><div>
+<h2>Wiki templates</h2>
+<pre class="tiny">
+{{{2|}}}{{
+#ifeq: {{{1|}}} | {{padleft:{{{1|}}}| {{{2|}}}4 }}
+| {{#ifeq: {{{1|}}} | {{padleft:{{{1|}}}| {{{2|}}}6 }}
+| {{#ifeq: {{{1|}}} | {{padleft:{{{1|}}}| {{{2|}}}8 }}
+| {{#ifeq: {{{1|}}} | {{padleft:{{{1|}}}| {{{2|}}}9 }}
+| 9
+| 8
+}}
+| {{#ifeq: {{{1|}}} | {{padleft:{{{1|}}}| {{{2|}}}7 }}
+| 7
+| 6
+}}
+}}
+| {{#ifeq: {{{1|}}} | {{padleft:{{{1|}}}| {{{2|}}}5 }}
+| 5
+| 4
+}}
+}}
+| {{#ifeq: {{{1|}}} | {{padleft:{{{1|}}}| {{{2|}}}2 }}
+| {{#ifeq: {{{1|}}} | {{padleft:{{{1|}}}| {{{2|}}}3 }}
+| 3
+| 2
+}}
+| {{#ifeq: {{{1|}}} | {{padleft:{{{1|}}}| {{{2|}}}1 }}
+| 1
+| 0
+}}
+}}
+}}
+</pre>
+</div></section>
+
+<section class="slide"><div>
+<h2>Scribunto Lua templates</h2>
+<p>Call with #invoke or wrap in a standard template
+<pre class="prettyprint">
+{{#invoke:MyLuaTemplate|function|name=Justin|url=http://en.wikipedia.org/}}
+</pre>
+</div></section>
+
+<section class="slide"><div>
+<h2>A template is a Lua module</h2>
+<pre class="prettyprint">
+local m = {
+  function1 = function(frame)
+    name = frame.args.name or "unknown"
+    return "Hello from Lua " .. name
+  end,
+}
+return m
+</pre>
+</div></section>
+
+	<section class="slide shout"><div>
+		<h2>Resources</h2>
+	</div></section>
+
+<section class="slide"><div>
+<h2>Helpful resources</h2>
+<ol>
+<li><a href="https://meta.wikimedia.org/wiki/Lua">Mediawiki Lua links<a/>
+<li><a href="https://www.mediawiki.org/wiki/Extension:Scribunto/Lua_reference_manual">Lua reference for Scribunto</a>
+<li><a href="https://www.mediawiki.org/wiki/Extension:Scribunto/Lua_reference_manual#Scribunto_libraries">Special functions available on Scribunto</a> - useful!
+<li><a href="https://en.wikipedia.org/wiki/Wikipedia:Lua_requests">Wikipedia Lua help requests</a>
+</ol>
+</div></section>
+
+	<section class="slide shout"><div>
+		<h2>Getting started</h2>
+	</div></section>
+
+<section class="slide"><div>
+<h2>Getting started</h2>
+<ol>
+<li>Create a Wikipedia account if you do not have one.
+<li>Create a test Lua module at Module:Sandbox/Username/Modulename
+<li>Try it out in your user sandbox
+</ol>
+<p>From now we are going to go live...
+</div></section>
+
+
+
+	<section class="slide shout" id="SeeMore"><div>
+		<h2><a href="https://github.com/justincormack/luawikitalk/">Slides on GitHub</a></h2>
+	</div></section>
+	<p class="badge"><a href="https://github.com/justincormack/luawikitalk">Fork me on Github</a></p>
+	<!--
+		To hide progress bar from entire presentation
+		just remove “progress” element.
+		-->
+	<div class="progress"><div></div></div>
+	<script src="shower/shower.min.js"></script>
+	<!-- Copyright © 2013 Yours Truly, Famous Inc. -->
+</body>
+</html>
