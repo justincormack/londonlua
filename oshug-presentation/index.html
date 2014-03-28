@@ -1,0 +1,316 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<title>Programming a microcontroller with Lua</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=792, user-scalable=no">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<link rel="stylesheet" href="node_modules/shower-bright/styles/screen.css">
+</head>
+<body class="list">
+<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+<script src="https://google-code-prettify.googlecode.com/svn/trunk/src/lang-lua.js"></script>
+<style>
+  a.no { text-decoration: none;
+   outline: none;
+    border: 0px none transparent;
+ }
+section.jcover {
+  text-align:center;
+}
+section.jcover:after {display: none;}
+img.displayed {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+ }
+img.behind {
+z-index:-1;
+margin-left:auto; margin-right:auto;
+display:block;
+position: absolute;
+top:20px;
+left: 0px;
+opacity: 0.5;
+}
+img.right {
+    display: block;
+    margin-left: auto;
+    margin-right: 0;
+    float: right;
+}
+section.puffy {
+opacity:.95;
+}
+section:after {display: none;}
+section.jshout {
+  text-align:center;
+  text-size: 48px;
+}
+.slide pre code.smallcode {
+  font-size: 12px;
+  line-height: 1.1;
+}
+.slide pre code {
+  line-height: 1.6;
+}
+</style>
+
+	<header class="caption">
+		<h1>Programming a microcontroller with Lua</h1>
+		<p>eLua is a full version of the Lua programming language for microcontrollers, running on bare metal. Lua provides a modern high level dynamically typed language, with first class functions, coroutines and an API for interacting with C code, and yet which is very small and can run in a memory constrained environment. </p>
+	</header>
+
+<section class="slide jcover" id="Cover"><div>
+
+
+<h2>Programming a microcontroller with&nbsp;Lua</h2>
+
+Justin Cormack <a href="https://twitter.com/justincormack">@justincormack</a>
+<br>
+<a href="http://www.londonlua.org/">http://www.londonlua.org</a>
+
+<img class="displayed" src="pictures/london-lua128.png"/>
+
+</div></section>
+
+<section class="slide"><div>
+<h2>Lua</h2>
+<blockquote>designed to be simple, small, portable, fast, and easily embedded into applications</blockquote>
+</div></section>
+
+
+<section class="slide"><div>
+<h2>What is Lua?</h2>
+<ul>
+<li>Created in 1993 (between Ruby and Python)
+<li>From Rio de Janeiro
+<li>Designed to be simple, small, portable, fast, and easily embedded into applications
+<li>Major releases <a href="http://www.lua.org/versions.html">every few years</a> with more frequent bug fixes
+<li>A minimalist philosophy, provides very well designed mechanisms.
+</ul>
+<img src="pictures/Panorama_from_Rio_de_Janeiro.jpg"/>
+</div></section>
+
+
+
+<section class="slide"><div>
+<h2>Lua...</h2>
+<ul>
+<li>Modern dynamically typed language with first class functions, hash tables, garbage collection, lexical scope, tail recursion, prototypal inheritance
+<li>Requires only ANSI C to build
+<li>Half the language spec is the API with C, which is simple, stack based, bidirectional
+<li>Full language 137k statically linked on x86, under 5% of Python, Ruby or V8
+</ul>
+</div></section>
+
+
+<section class="slide"><div>
+<h2>Lua...</h2>
+<ul>
+<li>Features are removed if they are not used, so language stays small. It is all the Good Parts.
+<li>Single complex data types, the table, which is a hash table and array.
+<li>One of the fastest interpreted languages
+<li>MIT licensed, easy to modify source code
+<li>Easy to learn.
+</ul>
+</div></section>
+
+<section class="slide"><div>
+<h2>Programming in Lua</h2>
+<a href="http://www.amazon.co.uk/Programming-Third-Edition-Roberto-Ierusalimschy/dp/859037985X/ref=sr_1_1?ie=UTF8&qid=1395868763&sr=8-1&keywords=programming+in+lua"><img class="right" src="pictures/pil.jpg"/></a>
+<p>One of the best introductions to a programming language there is. Written alongside each major release, if the feature cannot be explained clearly, it needs fixing.</p>
+</div></section>
+
+<section class="slide"><div>
+<h2>Uses for Lua</h2>
+<img class="right" src="pictures/angry.png"/>
+<ul>
+<li>Games, from World of Warcraft to Angry Birds
+<li>High performance networking eg <a href="https://github.com/SnabbCo/snabbswitch">software switches</a>, CloudFlare
+<li>Adobe Lightroom
+<li>Scripting other software eg nmap, Apache, Nginx, etc
+<li>LuCI, the user interface for OpenWRT
+<li>Embedded systems...
+</ul>
+</div></section>
+
+<section class="slide"><div>
+<h2>Why Lua for embedded systems?</h2>
+<ul>
+<li>Small
+<li>Can cut down further eg remove parser and just use bytecode
+<li>Allows changing the numerical type to integer, float or double depending on machine capabilities
+<li>Simple, so runs fast on a slow machine
+<li>Portable
+</ul>
+</div></section>
+
+<section class="slide"><div>
+<h2>How about eLua?</h2>
+<ul>
+<li>Lua for microcontrollers and embedded systems
+<li>It is the whole of Lua, not a cut down version
+<li>0.1 release in 2008
+<li>Evolved from 2005 projects by Bogdan Marinescu, Dado Sutter
+<li>Runs on ARM Cortex, AVR32, also runs on bare metal i386
+<li>MIT license.
+</ul>
+</div></section>
+
+<section class="slide"><div>
+<h2>How small is Lua?</h2>
+<ul>
+<li>Standard Lua needs around 17-25k of RAM at startup
+<li>eLua has a <a href="http://www.eluaproject.net/doc/v0.9/en_arch_ltr.html">Lua Tiny RAM</a> patch available, which makes the built in modules run from flash not RAM, saving a large amount of memory for almost all use cases.
+<li>It also has an <a href="http://www.eluaproject.net/doc/v0.9/en_elua_egc.html">Emergency Garbage Collection</a> patch available, which runs during memory allocations when there is not enough memory, or even before every allocation. A version of this is now in the core language (in Lua 5.2).
+</ul>
+</div></section>
+
+<section class="slide"><div>
+<h2>Libraries</h2>
+<ul>
+<li>Built in libraries for lots common microcontroller uses:
+<li>io: <em>pio, pwm, uart, adc, dac, spi, i2c, can</em>
+<li>TCP/IP networking based on uIP, or add your own stack
+<li>(even a <a href="https://github.com/nunzio-raciti/eLuaWebServer">web server</a> available
+<li>timers, counters
+<li>CPU access, eg interrupt control
+<li>These try to be cross platform where possible for portability.
+<ul>
+</div></section>
+
+<section class="slide"><div>
+<pre><code class="smallcode">
+chunk ::= {stat [`;´]} [laststat [`;´]]
+block ::= chunk
+stat ::=  varlist `=´ explist | 
+     functioncall | 
+     do block end | 
+     while exp do block end | 
+     repeat block until exp | 
+     if exp then block {elseif exp then block} [else block] end | 
+     for Name `=´ exp `,´ exp [`,´ exp] do block end | 
+     for namelist in explist do block end | 
+     function funcname funcbody | 
+     local function Name funcbody | 
+     local namelist [`=´ explist] 
+laststat ::= return [explist] | break
+funcname ::= Name {`.´ Name} [`:´ Name]
+varlist ::= var {`,´ var}
+var ::=  Name | prefixexp `[´ exp `]´ | prefixexp `.´ Name 
+namelist ::= Name {`,´ Name}
+explist ::= {exp `,´} exp
+exp ::=  nil | false | true | Number | String | `...´ | function | 
+     prefixexp | tableconstructor | exp binop exp | unop exp 
+prefixexp ::= var | functioncall | `(´ exp `)´
+functioncall ::=  prefixexp args | prefixexp `:´ Name args 
+args ::=  `(´ [explist] `)´ | tableconstructor | String 
+function ::= function funcbody
+funcbody ::= `(´ [parlist] `)´ block end
+parlist ::= namelist [`,´ `...´] | `...´
+tableconstructor ::= `{´ [fieldlist] `}´
+fieldlist ::= field {fieldsep field} [fieldsep]
+field ::= `[´ exp `]´ `=´ exp | Name `=´ exp | exp
+fieldsep ::= `,´ | `;´
+binop ::= `+´ | `-´ | `*´ | `/´ | `^´ | `%´ | `..´ | 
+     `<´ | `<=´ | `>´ | `>=´ | `==´ | `~=´ | 
+     and | or
+unop ::= `-´ | not | `#´
+<pre><code>
+</div></section>
+
+<section class="slide"><div>
+<pre><code class="prettyprint lang-lua">
+pio.pin.setdir(pio.OUTPUT, pio.PD_15)
+
+for i = 1, 100 do
+  pio.pin.sethigh(pio.PD_15)
+  tmr.delay(0, 50000)
+  pio.pin.setlow(pio.PD_15)
+  tmr.delay(0, 50000)
+end
+</code></pre>
+</div></section>
+
+<section class="slide"><div>
+<pre><code class="prettyprint lang-lua">
+local tmrid, crtduty, incr = 0, 10, 5
+for pwmid = 0, 3 do pwm.setclock(pwmid, 25000000) end
+tmr.start(tmrid)
+for pwmid = 0, 3 do pwm.start(pwmid) end
+for i = 1, 1000 do
+  if crtduty == 95 or crtduty == 5 then incr = -incr end
+  crtduty = crtduty + incr
+  for pwmid = 0, 3 do
+    pwm.setup(pwmid, 50000, (crtduty + 25 * pwmid) % 90 + 5)  
+  end
+  tmr.delay(tmrid, 50000)  
+end
+</code></pre>
+</div></section>
+
+
+<section class="slide"><div>
+<h2>Ways to run code interactively</h2>
+<ul>
+<li>interactively in the interpreter
+<li>xmodem file transfer from console or Lua
+<li>RPC from desktop
+<li>Autoboot from SD card (some machines with storage)
+<li>There are editors written in Lua
+<li>USB host filesystem access would be nice...
+</ul>
+</div></section>
+
+<section class="slide"><div>
+<h2>Ways to run code in production</h2>
+<ul>
+<li>Extend eLua to support your custom hardware either in Lua or C
+<li>It is quite possible to write many drivers just in Lua
+<li>Build your functions into the eLua build
+<li>Flash your code along with the Lua code
+<li>Lua and C interoperate with no problems!
+</ul>
+</div></section>
+
+<section class="slide"><div>
+<h2>Open Hardware shipping with eLua</h2>
+<img class="right" src="pictures/Mizar32_front_small.gif" width="400"/>
+<ul>
+<li><a href="http://simplemachines.it/">SimpleMachines</a> in Italy make Mizar32 open hardware boards shipping with eLua.
+<li>CERN Open Hardware License
+<li>Based on 66MHz AVR32 chipset, 128-512kB flash, 32-64kB internal RAM, 32MB external RAM
+<li>Micro SD card, USB, JTAG
+<li>Lots of expansion boards are available - LCD, ethernet etc
+</ul>
+</div></section>
+
+<section class="slide"><div>
+<h2>Community</h2>
+<p>The general Lua community is relatively small, but growing.
+<p>The Eclipse Foundation is becoming a centre for open source projects around embedded Lua, including the <a href="http://www.eclipse.org/mihini/">Mihini</a> project, started by Sierra Wireless.
+<p>I organize (irregular) <a href="http://www.meetup.com/London-Lua-User-Group/">London Lua group</a> meetups.
+</div></section>
+
+<section class="slide"><div>
+<h2>Resources</h2>
+<ul>
+<li><a href="http://www.eluaproject.net/">http://www.eluaproject.net/</a> eLua Project home
+<li><a href="https://github.com/elua">https://github.com/elua</a> eLua github: examples & documentation
+<li><a href="http://www.lua.org/">http://www.lua.org/</a> Lua home
+<li>Both have helpful mailing lists
+<li><a href="http://www.meetup.com/London-Lua-User-Group/">http://www.meetup.com/London-Lua-User-Group/</a> London Lua User Group
+<li>Twitter <a href="https://twitter.com/eluaproject">@eluaproject</a> <a href="https://twitter.com/londonlua">@londonlua</a>
+</ul>
+</div></section>
+
+	<!--p class="badge"><a href="https://github.com/shower/shower">Fork me on Github</a></p-->
+	<!--
+		To hide progress bar from entire presentation
+		just remove “progress” element.
+		-->
+	<div class="progress"><div></div></div>
+	<script src="node_modules/shower-core/shower.min.js"></script>
+</body>
+</html>
